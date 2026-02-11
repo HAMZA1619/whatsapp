@@ -3,6 +3,9 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "workspace",
   "workspaceFolder": "/workspace",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
   "forwardPorts": [8080],
   "portsAttributes": {
     "8080": {
@@ -10,5 +13,5 @@
       "onAutoForward": "notify"
     }
   },
-  "postStartCommand": "echo '✅ Evolution API is running at port 8080. Check the PORTS tab for the public URL.'"
+  "postStartCommand": "echo 'Evolution API is running. Check the PORTS tab for the public URL.'"
 }

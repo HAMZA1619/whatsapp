@@ -1,4 +1,12 @@
 services:
+  workspace:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    depends_on:
+      - evolution_api
+
   evolution_api:
     image: atendai/evolution-api
     container_name: evolution_api
@@ -10,13 +18,6 @@ services:
     volumes:
       - evolution_store:/evolution/store
       - evolution_instances:/evolution/instances
-
-  workspace:
-    image: mcr.microsoft.com/devcontainers/base:ubuntu
-    volumes:
-      - ..:/workspace:cached
-    command: sleep infinity
-    network_mode: service:evolution_api
 
 volumes:
   evolution_store:
