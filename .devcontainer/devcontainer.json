@@ -1,5 +1,5 @@
 {
-  "name": "Evolution API",
+  "name": "BioStore",
   "dockerComposeFile": "docker-compose.yml",
   "service": "workspace",
   "workspaceFolder": "/workspace",
@@ -9,12 +9,12 @@
   "forwardPorts": [8080],
   "portsAttributes": {
     "8080": {
-      "label": "Evolution API",
+      "label": "BioStore",
       "onAutoForward": "notify"
     }
   },
   "remoteEnv": {
     "DOCKER_API_VERSION": "1.43"
   },
-  "postStartCommand": "echo 'Evolution API is running. Check the PORTS tab for the public URL.'"
+  "postStartCommand": "echo 'BioStore is running. Check the PORTS tab for the public URL.'"
 }
