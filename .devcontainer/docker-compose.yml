@@ -15,6 +15,16 @@ services:
       - "8080:8080"
     environment:
       - AUTHENTICATION_API_KEY=test123
+      - DATABASE_PROVIDER=mysql
+      - DATABASE_CONNECTION_URI=mysql://4iLC6YjkVoAYdoD.root:1kZuWpvc18D4NoSz@gateway01.eu-central-1.prod.aws.tidbcloud.com:4000/test?sslaccept=strict
+      - DATABASE_CONNECTION_CLIENT_NAME=evolution
+      - DATABASE_SAVE_DATA_INSTANCE=true
+      - DATABASE_SAVE_DATA_NEW_MESSAGE=true
+      - DATABASE_SAVE_MESSAGE_UPDATE=true
+      - DATABASE_SAVE_DATA_CONTACTS=true
+      - DATABASE_SAVE_DATA_CHATS=true
+      - DATABASE_SAVE_DATA_LABELS=true
+      - DATABASE_SAVE_DATA_HISTORIC=true
     volumes:
       - evolution_store:/evolution/store
       - evolution_instances:/evolution/instances
