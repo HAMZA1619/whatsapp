@@ -15,8 +15,8 @@ services:
       - "8080:8080"
     environment:
       - AUTHENTICATION_API_KEY=test123
-      - DATABASE_PROVIDER=mysql
-      - DATABASE_CONNECTION_URI=mysql://4iLC6YjkVoAYdoD.root:1kZuWpvc18D4NoSz@gateway01.eu-central-1.prod.aws.tidbcloud.com:4000/test?sslaccept=strict
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://postgres:postgres@postgres:5432/evolution?schema=public
       - DATABASE_CONNECTION_CLIENT_NAME=evolution
       - DATABASE_SAVE_DATA_INSTANCE=true
       - DATABASE_SAVE_DATA_NEW_MESSAGE=true
@@ -28,7 +28,27 @@ services:
     volumes:
       - evolution_store:/evolution/store
       - evolution_instances:/evolution/instances
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=evolution
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   evolution_store:
   evolution_instances:
+  postgres_data:
