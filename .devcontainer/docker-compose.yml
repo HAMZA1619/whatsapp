@@ -1,0 +1,23 @@
+services:
+  evolution_api:
+    image: atendai/evolution-api
+    container_name: evolution_api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - AUTHENTICATION_API_KEY=test123
+    volumes:
+      - evolution_store:/evolution/store
+      - evolution_instances:/evolution/instances
+
+  workspace:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    network_mode: service:evolution_api
+
+volumes:
+  evolution_store:
+  evolution_instances:

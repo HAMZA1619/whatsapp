@@ -1,0 +1,14 @@
+{
+  "name": "Evolution API",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "workspace",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "Evolution API",
+      "onAutoForward": "notify"
+    }
+  },
+  "postStartCommand": "echo '✅ Evolution API is running at port 8080. Check the PORTS tab for the public URL.'"
+}
