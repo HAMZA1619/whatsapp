@@ -13,5 +13,8 @@
       "onAutoForward": "notify"
     }
   },
+  "remoteEnv": {
+    "DOCKER_API_VERSION": "1.43"
+  },
   "postStartCommand": "echo 'Evolution API is running. Check the PORTS tab for the public URL.'"
 }
