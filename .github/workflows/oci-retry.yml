@@ -43,8 +43,8 @@ jobs:
             --compartment-id "ocid1.tenancy.oc1..aaaaaaaa2jmzp6bq7fovdlqsn3vyjtrvpvjogfwwrbexzgwttk442uxawhna" \
             --availability-domain "CVBu:ME-DUBAI-1-AD-1" \
             --shape "VM.Standard.A1.Flex" \
-            --shape-config '{"ocpus": 2, "memoryInGBs": 12}' \
-            --image-id "ocid1.image.oc1.me-dubai-1.aaaaaaaayxyt44jx57nqg6qsd36allicn7jceiqdcwmksdbpq3ashccytopa" \
+            --shape-config '{"ocpus": 1, "memoryInGBs": 6}' \
+            --image-id "ocid1.image.oc1.me-dubai-1.aaaaaaaam643oym7o66pe5omdc5fqcjwaybj3z23erlvjzotovsdfag5yfla" \
             --subnet-id "ocid1.subnet.oc1.me-dubai-1.aaaaaaaaeybpy3em73nevvsmntkiqnh3nkkzx4aprt4egcs7jz6yg22untdq" \
             --display-name "chat-api" \
             --assign-public-ip true \
