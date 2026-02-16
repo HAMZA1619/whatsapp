@@ -2,13 +2,11 @@ name: OCI Instance Auto-Retry
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/5 * * * *'
 
 jobs:
   create-instance:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 350
 
     steps:
       - name: Install OCI CLI
@@ -23,44 +21,43 @@ jobs:
 
           cat <<'CONFEOF' > ~/.oci/config
           [DEFAULT]
-          # User OCID - Profile icon (top-right) → My Profile → copy OCID
           user=ocid1.user.oc1..aaaaaaaa2vadufabj773jrg4ut7oq5ijq7awnxu36w7rwpib2ijvscui6dyq
-
-          # Fingerprint - shown after you add the API key
           fingerprint=02:66:cd:9a:01:50:1f:a9:dc:4e:8e:ea:e4:50:06:d6
-
           tenancy=ocid1.tenancy.oc1..aaaaaaaa2jmzp6bq7fovdlqsn3vyjtrvpvjogfwwrbexzgwttk442uxawhna
           region=me-dubai-1
           key_file=~/.oci/oci_api_key.pem
           CONFEOF
           chmod 600 ~/.oci/config
 
-      - name: Try to create instance
-        id: create
+      - name: Retry until instance is created
         run: |
-          echo "Attempting to create instance..."
-          result=$(oci compute instance launch \
-            --compartment-id "ocid1.tenancy.oc1..aaaaaaaa2jmzp6bq7fovdlqsn3vyjtrvpvjogfwwrbexzgwttk442uxawhna" \
-            --availability-domain "CVBu:ME-DUBAI-1-AD-1" \
-            --shape "VM.Standard.A1.Flex" \
-            --shape-config '{"ocpus": 1, "memoryInGBs": 6}' \
-            --image-id "ocid1.image.oc1.me-dubai-1.aaaaaaaam643oym7o66pe5omdc5fqcjwaybj3z23erlvjzotovsdfag5yfla" \
-            --subnet-id "ocid1.subnet.oc1.me-dubai-1.aaaaaaaaeybpy3em73nevvsmntkiqnh3nkkzx4aprt4egcs7jz6yg22untdq" \
-            --display-name "chat-api" \
-            --assign-public-ip true \
-            --ssh-authorized-keys-file <(echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOKI84BhKq+00AFymwx2b8K6r/QHwk8DUiWodlN/2dyv evolution-api-oci") \
-            2>&1) || true
+          attempt=0
+          while true; do
+            attempt=$((attempt + 1))
+            echo "=== Attempt #$attempt - $(date) ==="
 
-          echo "$result"
+            result=$(oci compute instance launch \
+              --compartment-id "ocid1.tenancy.oc1..aaaaaaaa2jmzp6bq7fovdlqsn3vyjtrvpvjogfwwrbexzgwttk442uxawhna" \
+              --availability-domain "CVBu:ME-DUBAI-1-AD-1" \
+              --shape "VM.Standard.A1.Flex" \
+              --shape-config '{"ocpus": 1, "memoryInGBs": 6}' \
+              --image-id "ocid1.image.oc1.me-dubai-1.aaaaaaaam643oym7o66pe5omdc5fqcjwaybj3z23erlvjzotovsdfag5yfla" \
+              --subnet-id "ocid1.subnet.oc1.me-dubai-1.aaaaaaaaeybpy3em73nevvsmntkiqnh3nkkzx4aprt4egcs7jz6yg22untdq" \
+              --display-name "chat-api" \
+              --assign-public-ip true \
+              --ssh-authorized-keys-file <(echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOKI84BhKq+00AFymwx2b8K6r/QHwk8DUiWodlN/2dyv evolution-api-oci") \
+              2>&1) || true
 
-          if echo "$result" | grep -q '"lifecycle-state"'; then
-            echo "SUCCESS! Instance created!"
-            echo "instance_created=true" >> $GITHUB_OUTPUT
-          else
-            echo "Failed - will retry on next schedule"
-            echo "instance_created=false" >> $GITHUB_OUTPUT
-          fi
+            echo "$result"
 
-      - name: Instance created
-        if: steps.create.outputs.instance_created == 'true'
-        run: echo "Instance created! DISABLE THIS WORKFLOW NOW in Actions tab."
+            if echo "$result" | grep -q '"lifecycle-state"'; then
+              echo ""
+              echo "========================================="
+              echo "SUCCESS! Instance created!"
+              echo "========================================="
+              exit 0
+            fi
+
+            echo "Failed. Retrying in 5 minutes..."
+            sleep 300
+          done
