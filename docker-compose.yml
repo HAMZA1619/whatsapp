@@ -1,6 +1,6 @@
 services:
   evolution_api:
-    image: atendai/evolution-api
+    image: evoapicloud/evolution-api:v2.3.7
     container_name: whatsapp
     restart: unless-stopped
     ports:
