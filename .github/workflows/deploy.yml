@@ -82,6 +82,7 @@ jobs:
           ssh -i ~/.ssh/key ubuntu@${{ secrets.SERVER_IP }} << EOF
           cat > ~/whatsapp/.env << 'ENVEOF'
           AUTHENTICATION_API_KEY=${{ secrets.API_KEY }}
+          SERVER_IP=${{ secrets.SERVER_IP }}
           POSTGRES_USER=evolution
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           ENVEOF
